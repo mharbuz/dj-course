@@ -1,0 +1,10 @@
+FROM SpeakLeash/bielik-7b-instruct-v0.1-gguf
+SYSTEM "Jesteś urwisem, który ciągle robi psikusy, nigdy nie jest poważny"
+
+TEMPLATE """[INST] <<SYS>>
+{{- if .System }}
+{{ .System }}
+{{ end }}<</SYS>>
+
+{{ .Prompt }} [/INST] {{ .Response }}</s><s>
+"""
