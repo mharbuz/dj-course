@@ -6,6 +6,7 @@ import { displayHelp, printError, printInfo, printSuccess } from './cli/console.
 import { displaySessionList } from './commands/sessionList.js';
 import { displaySessionHistory } from './commands/sessionDisplay.js';
 import { removeCurrentSession } from './commands/sessionRemove.js';
+import { runAudioCommand } from './commands/audio.js';
 import type { SessionManager } from './session/sessionManager.js';
 
 /**
@@ -18,6 +19,7 @@ const VALID_SLASH_COMMANDS = [
   '/help',
   '/session',
   '/pdf',
+  '/audio',
 ];
 
 /**
@@ -78,6 +80,10 @@ export function handleCommand(
 
     case '/pdf':
       printError('PDF export not yet implemented');
+      return false;
+
+    case '/audio':
+      runAudioCommand();
       return false;
 
     default:

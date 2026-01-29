@@ -70,6 +70,7 @@ export function displayHelp(sessionId?: string): void {
   printHelp('  /session pop      - Usuwa ostatnią parę wpisów (TY i asystent).');
   printHelp('  /session clear    - Czyści historię bieżącej sesji.');
   printHelp('  /session new      - Rozpoczyna nową sesję.');
+  printHelp('  /audio            - Komenda audio (placeholder).');
 }
 
 /**

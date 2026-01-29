@@ -15,6 +15,7 @@ const commands: Record<string, string[]> = {
   '/exit': [],
   '/quit': [],
   '/pdf': [],
+  '/audio': [],
 };
 
 /**
