@@ -6,7 +6,8 @@ from animate import run_tts_animation, console
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-FILE_PATH = "sample-agent.wav"
+# FILE_PATH = "sample-agent.wav"
+FILE_PATH = "sample-grampa.mp3"
 OUTPUT_WAV_PATH = "output.wav"
 
 GENERATION_DONE = threading.Event() 

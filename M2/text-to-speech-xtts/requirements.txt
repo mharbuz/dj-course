@@ -1,2 +1,4 @@
-coqui-tts
+torch
+torchaudio
+coqui-tts[codec]
 rich

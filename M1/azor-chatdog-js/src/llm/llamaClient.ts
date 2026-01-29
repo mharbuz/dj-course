@@ -41,6 +41,15 @@ class LlamaChatSessionWrapper implements ILLMChatSession {
 }
 
 /**
+ * Generation parameters for LLaMA
+ */
+interface LlamaGenerationParams {
+  temperature?: number;
+  topP?: number;
+  topK?: number;
+}
+
+/**
  * LLaMA LLM Client implementation
  *
  * This is a placeholder implementation. For full LLaMA support,
@@ -51,17 +60,20 @@ export class LlamaClient implements ILLMClient {
   private modelPath: string;
   private gpuLayers: number;
   private contextSize: number;
+  private _generationParams: LlamaGenerationParams;
 
   constructor(
     modelName: string,
     modelPath: string,
     gpuLayers: number,
-    contextSize: number
+    contextSize: number,
+    generationParams?: LlamaGenerationParams
   ) {
     this.modelName = modelName;
     this.modelPath = modelPath;
     this.gpuLayers = gpuLayers;
     this.contextSize = contextSize;
+    this._generationParams = generationParams || {};
   }
 
   /**
@@ -73,7 +85,12 @@ export class LlamaClient implements ILLMClient {
       config.modelName,
       config.llamaModelPath,
       config.llamaGpuLayers,
-      config.llamaContextSize
+      config.llamaContextSize,
+      {
+        temperature: config.temperature,
+        topP: config.topP,
+        topK: config.topK,
+      }
     );
   }
 
@@ -114,6 +131,17 @@ export class LlamaClient implements ILLMClient {
   }
 
   readyForUseMessage(): string {
-    return `LLaMA ${this.modelName} ready (GPU layers: ${this.gpuLayers}, Context: ${this.contextSize})`;
+    const params = [];
+    if (this._generationParams.temperature !== undefined) {
+      params.push(`temp=${this._generationParams.temperature}`);
+    }
+    if (this._generationParams.topP !== undefined) {
+      params.push(`topP=${this._generationParams.topP}`);
+    }
+    if (this._generationParams.topK !== undefined) {
+      params.push(`topK=${this._generationParams.topK}`);
+    }
+    const paramsStr = params.length > 0 ? `, ${params.join(', ')}` : '';
+    return `LLaMA ${this.modelName} ready (GPU layers: ${this.gpuLayers}, Context: ${this.contextSize}${paramsStr})`;
   }
 }

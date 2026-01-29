@@ -49,15 +49,29 @@ class GeminiChatSessionWrapper implements ILLMChatSession {
 /**
  * Gemini LLM Client implementation
  */
+/**
+ * Generation parameters for Gemini
+ */
+interface GeminiGenerationParams {
+  temperature?: number;
+  topP?: number;
+  topK?: number;
+}
+
+/**
+ * Gemini LLM Client implementation
+ */
 export class GeminiLLMClient implements ILLMClient {
   private genAI: GoogleGenerativeAI;
   private modelName: string;
   private apiKey: string;
+  private generationParams: GeminiGenerationParams;
 
-  constructor(modelName: string, apiKey: string) {
+  constructor(modelName: string, apiKey: string, generationParams?: GeminiGenerationParams) {
     this.modelName = modelName;
     this.apiKey = apiKey;
     this.genAI = new GoogleGenerativeAI(apiKey);
+    this.generationParams = generationParams || {};
   }
 
   /**
@@ -65,7 +79,11 @@ export class GeminiLLMClient implements ILLMClient {
    */
   static fromEnvironment(): GeminiLLMClient {
     const config = validateGeminiConfig();
-    return new GeminiLLMClient(config.modelName, config.geminiApiKey);
+    return new GeminiLLMClient(config.modelName, config.geminiApiKey, {
+      temperature: config.temperature,
+      topP: config.topP,
+      topK: config.topK,
+    });
   }
 
   /**
@@ -91,11 +109,22 @@ export class GeminiLLMClient implements ILLMClient {
       },
     };
 
-    // Add thinking budget if specified
+    // Build generation config
+    const generationConfig: any = {};
     if (thinkingBudget !== undefined) {
-      modelConfig.generationConfig = {
-        thinkingBudget: thinkingBudget,
-      };
+      generationConfig.thinkingBudget = thinkingBudget;
+    }
+    if (this.generationParams.temperature !== undefined) {
+      generationConfig.temperature = this.generationParams.temperature;
+    }
+    if (this.generationParams.topP !== undefined) {
+      generationConfig.topP = this.generationParams.topP;
+    }
+    if (this.generationParams.topK !== undefined) {
+      generationConfig.topK = this.generationParams.topK;
+    }
+    if (Object.keys(generationConfig).length > 0) {
+      modelConfig.generationConfig = generationConfig;
     }
 
     const model = this.genAI.getGenerativeModel(modelConfig);
