@@ -54,6 +54,20 @@ LLAMA_GPU_LAYERS=1
 LLAMA_CONTEXT_SIZE=2048
 ```
 
+### TTS (/audio command)
+
+To use `/audio` (text-to-speech of the latest assistant reply), set the path to the M2 XTTS CLI script and ensure the M2 Python venv and Coqui TTS are installed:
+
+```bash
+# Path to tts_cli.py in the dj-course repo
+XTTS_CLI_PATH=/path/to/dj-course/M2/text-to-speech-xtts/tts_cli.py
+
+# Optional: use M2 venv Python
+PYTHON_PATH=/path/to/dj-course/M2/.venv/bin/python
+```
+
+Install M2 dependencies: `cd M2/text-to-speech-xtts && pip install -r requirements.txt`. The first run will download the XTTS model.
+
 ## Usage
 
 ### Run in Development Mode
@@ -104,9 +118,10 @@ The CLI supports **Tab autocompletion** for commands and subcommands:
 - `/session remove` - Remove current session and start new
 - `/switch <SESSION_ID>` - Switch to a different session
 
-### Export
+### Export & Audio
 
 - `/pdf` - Export session to PDF (coming soon)
+- `/audio` - Generate WAV from the latest assistant response (TTS via XTTS) and play it. Requires `XTTS_CLI_PATH` and M2 text-to-speech-xtts setup.
 
 ### General
 

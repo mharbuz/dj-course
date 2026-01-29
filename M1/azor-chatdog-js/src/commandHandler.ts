@@ -83,7 +83,7 @@ export function handleCommand(
       return false;
 
     case '/audio':
-      runAudioCommand();
+      runAudioCommand(manager);
       return false;
 
     default:

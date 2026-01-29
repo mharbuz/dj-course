@@ -53,3 +53,26 @@ export function getWALFile(): string {
 export function getSessionFilePath(sessionId: string): string {
   return path.join(getLogDir(), `${sessionId}-log.json`);
 }
+
+/**
+ * Get the directory for audio (TTS) output files
+ */
+export function getAudioOutputDir(): string {
+  const audioDir = path.join(getOutputDir(), 'audio');
+
+  if (!fs.existsSync(audioDir)) {
+    fs.mkdirSync(audioDir, { recursive: true });
+  }
+
+  return audioDir;
+}
+
+/**
+ * Get a unique output path for a TTS WAV file (timestamped)
+ */
+export function getAudioOutputPath(sessionId: string): string {
+  const audioDir = getAudioOutputDir();
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const safeSessionId = sessionId.replace(/[^a-zA-Z0-9-]/g, '_').slice(0, 20);
+  return path.join(audioDir, `${safeSessionId}-${timestamp}.wav`);
+}
