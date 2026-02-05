@@ -275,7 +275,7 @@ AZØR - Wyspecjalizowani asystenci
   - łądując starą sesję - analogicznie
   - zmiana asystenta w trakcie sesji zostawia ślaj w historii konwersacji, aby model w następnych krokach wiedział, że zmiana miała miejsce (wówczas na podst. system prompta lepiej ogarnie kontekst)
 
-**CEL**: masz minimum 2 nowych asystentów (a AZØR zostaje - więc w sumie minimum trzech). I w możesz w trakcie trwania konwersacji ich przełączać.
+**CEL**: masz  2 nowych asystentów (a AZØR zostaje - więc w sumie minimum trzech). I w możesz w trakcie trwania konwersacji ich przełączać. Nowy asystent 1: Kaczor Duffy, Nowy asystent 2: Bugs Bunny, który bardzo często wtrąca "Co jest doktorku?" albo "Doktorku"
 
 **Inspiracje asystentów**:
 - perfekcjonista przykładający ogromną wagę do detali.

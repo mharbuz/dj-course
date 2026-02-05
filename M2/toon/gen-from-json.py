@@ -154,7 +154,7 @@ def process_file(json_file_name: str, base_dir: str) -> None:
 
 if __name__ == "__main__":
     BASE_DIR = 'samples/'
-    JSON_FILES = ['arch.json', 'models.json', 'placeholder.json', 'photos.json', 'recipe.json']
+    JSON_FILES = ['arch.json', 'models.json', 'placeholder.json', 'photos.json', 'recipe.json', 'mps.json']
     
     if not os.path.isdir(BASE_DIR):
         print(f"OSTRZEŻENIE: Katalog bazowy '{BASE_DIR}' nie istnieje. Próbuję go utworzyć.")

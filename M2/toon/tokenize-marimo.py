@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.17.7"
+__generated_with = "0.19.6"
 app = marimo.App(width="medium")
 
 
@@ -39,10 +39,10 @@ def _(TOKENIZER_DIR, Tokenizer, os):
         print(f"❌ Error: Tokenizer directory not found at {TOKENIZER_DIR}")
         exit(1)
 
-    for filename in os.listdir(TOKENIZER_DIR):
-        if filename.endswith('.json'):
-            key = filename[:-5]  # remove .json
-            full_path = os.path.join(TOKENIZER_DIR, filename)
+    for tokenizer_fname in os.listdir(TOKENIZER_DIR):
+        if tokenizer_fname.endswith('.json'):
+            key = tokenizer_fname[:-5]  # remove .json
+            full_path = os.path.join(TOKENIZER_DIR, tokenizer_fname)
             try:
                 ALL_TOKENIZERS[key] = Tokenizer.from_file(full_path)
             except Exception as e:
@@ -59,77 +59,78 @@ def _(TOKENIZER_DIR, Tokenizer, os):
 
 
 @app.cell
-def _(SAMPLES_DIR, TOKENIZER_NAME, json, os, tokenizer):
-    SAMPLE_NAME = 'placeholder'
+def _(SAMPLES_DIR, os):
+    # Lista próbek: bazowe nazwy z plików *-nows.json w samples/
+    sample_base_names = []
+    if os.path.isdir(SAMPLES_DIR):
+        for sample_fname in sorted(os.listdir(SAMPLES_DIR)):
+            if sample_fname.endswith("-nows.json"):
+                base = sample_fname[:-10]  # remove -nows.json
+                sample_base_names.append(base)
+    return sample_base_names
 
-    sample_data = {}
+
+@app.cell
+def _(SAMPLES_DIR, os, sample_base_names, tokenizer):
+    BAR_LEN = 20
+    FORMAT_LABELS = {
+        "json": "JSON",
+        "nows-json": "JSON compact",
+        "toon": "TOON",
+        "yaml": "YAML",
+    }
+    EXTENSIONS = {"json": ".json", "nows-json": "-nows.json", "toon": ".toon", "yaml": ".yaml"}
+
     results = {}
 
-    file_path_json = os.path.join(SAMPLES_DIR, f"{SAMPLE_NAME}.json")
-    try:
-        with open(file_path_json, "r", encoding="utf-8") as f:
-            sample_data['json'] = f.read()
-    except FileNotFoundError as e:
-        print(f"⚠️ Warning: Could not find file '{SAMPLE_NAME}.json'. Skipping. Details: {e}")
-        sample_data['json'] = ""
+    for SAMPLE_NAME in sample_base_names:
+        sample_data = {}
+        for fmt, ext in EXTENSIONS.items():
+            path = os.path.join(SAMPLES_DIR, f"{SAMPLE_NAME}{ext}")
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    sample_data[fmt] = f.read()
+            except FileNotFoundError:
+                sample_data[fmt] = ""
 
-    file_path_nows = os.path.join(SAMPLES_DIR, f"{SAMPLE_NAME}-nows.json")
-    try:
-        with open(file_path_nows, "r", encoding="utf-8") as f:
-            sample_data['nows-json'] = f.read()
-    except FileNotFoundError as e:
-        print(f"⚠️ Warning: Could not find file '{SAMPLE_NAME}-nows.json'. Skipping. Details: {e}")
-        sample_data['nows-json'] = ""
-
-    file_path_toon = os.path.join(SAMPLES_DIR, f"{SAMPLE_NAME}.toon")
-    try:
-        with open(file_path_toon, "r", encoding="utf-8") as f:
-            sample_data['toon'] = f.read()
-    except FileNotFoundError as e:
-        print(f"⚠️ Warning: Could not find file '{SAMPLE_NAME}.toon'. Skipping. Details: {e}")
-        sample_data['toon'] = ""
-
-    file_path_yaml = os.path.join(SAMPLES_DIR, f"{SAMPLE_NAME}.yaml")
-    try:
-        with open(file_path_yaml, "r", encoding="utf-8") as f:
-            sample_data['yaml'] = f.read()
-    except FileNotFoundError as e:
-        print(f"⚠️ Warning: Could not find file '{SAMPLE_NAME}.yaml'. Skipping. Details: {e}")
-        sample_data['yaml'] = ""
-
-    if all(value == "" for value in sample_data.values()):
-         print(f"--- 🚫 Skipping sample '{SAMPLE_NAME}': All required files are missing. ---")
-    else:
+        if all(value == "" for value in sample_data.values()):
+            continue
         try:
-            encoded_json = tokenizer.encode(json.dumps(sample_data.get('json', '')))
-            encoded_nows_json = tokenizer.encode(json.dumps(sample_data.get('nows-json', '')))
-
-            encoded_toon = tokenizer.encode(sample_data.get('toon', ''))
-            encoded_yaml = tokenizer.encode(sample_data.get('yaml', ''))
-
-            results[SAMPLE_NAME] = {
-                'json': len(encoded_json.ids),
-                'nows-json': len(encoded_nows_json.ids),
-                'yaml': len(encoded_yaml.ids),
-                'toon': len(encoded_toon.ids),
-            }
-
+            counts = {}
+            for fmt in ("json", "nows-json", "toon", "yaml"):
+                text = sample_data.get(fmt, "") or ""
+                counts[fmt] = len(tokenizer.encode(text).ids)
+            results[SAMPLE_NAME] = counts
         except Exception as e:
-            print(f"❌ Critical Error processing sample '{SAMPLE_NAME}' during tokenization: {e}")
+            print(f"❌ Error processing '{SAMPLE_NAME}': {e}")
+
+    return BAR_LEN, EXTENSIONS, FORMAT_LABELS, results
 
 
-    print("\n" + "="*50)
-    print(f"Tokenizer: {TOKENIZER_NAME}")
-    print("="*50)
+@app.cell
+def _(BAR_LEN, FORMAT_LABELS, results, mo):
+    def make_bar(ratio):
+        filled = round(ratio * BAR_LEN)
+        return "█" * filled + "░" * (BAR_LEN - filled)
 
-    if SAMPLE_NAME in results:
-        counts = results[SAMPLE_NAME]
-        print(f"--- Sample: {SAMPLE_NAME} ---")
-        print(f"Liczba tokenów json: {counts['json']}")
-        print(f"Liczba tokenów nows-json: {counts['nows-json']}")
-        print(f"Liczba tokenów yaml: {counts['yaml']}")
-        print(f"Liczba tokenów toon: {counts['toon']}")
-    return
+    lines = []
+    for sample_name in sorted(results.keys()):
+        sample_counts = results[sample_name]
+        min_tokens = min(sample_counts.values())
+        sorted_formats = sorted(sample_counts.keys(), key=lambda k: sample_counts[k])
+        lines.append(sample_name)
+        for i, format_key in enumerate(sorted_formats):
+            n = sample_counts[format_key]
+            pct = 100.0 * min_tokens / n if n else 0
+            bar = make_bar(min_tokens / n) if n else make_bar(0)
+            label = FORMAT_LABELS[format_key]
+            prefix = "→ " if i == 0 else "  "
+            lines.append(f"{prefix}{label:<14} {bar}    {pct:5.1f}% ({n})")
+        lines.append("")
+
+    chart_text = "\n".join(lines)
+    mo.md(f"```\n{chart_text}\n```")
+    return chart_text, make_bar
 
 
 if __name__ == "__main__":

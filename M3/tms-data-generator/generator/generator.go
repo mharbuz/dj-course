@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"tms-data-generator/generator/availability"
 	"tms-data-generator/generator/config"
 	"tms-data-generator/generator/customers"
 	"tms-data-generator/generator/drivers"
@@ -105,7 +106,17 @@ func Generate(outputFile string) error {
 	timelineEvents := transportation_orders.GenerateOrderTimelineEvents(ordersList)
 	fmt.Println("done generating timeline events", time.Now(), time.Since(startTimeline))
 
-	// Phase 6: Generate SQL statements
+	// Phase 6: Generate resource availability (depends on driver/vehicle counts only)
+	startAvail := time.Now()
+	fmt.Println("Generating resource availability...", time.Now())
+	availabilitySlots := availability.GenerateResourceAvailability(
+		config.DRIVERS, config.VEHICLES,
+		config.AVAILABILITY_SLOTS_PER_RESOURCE, config.AVAILABILITY_DAYS_AHEAD,
+	)
+	availabilityStatements := availability.GenerateInsertStatements(availabilitySlots)
+	fmt.Println("done generating resource availability", time.Now(), time.Since(startAvail))
+
+	// Phase 7: Generate SQL statements
 	startSQL := time.Now()
 	fmt.Println("Generating SQL statements...", time.Now())
 	ordersStatements := transportation_orders.GenerateInsertStatements(ordersList)
@@ -127,6 +138,7 @@ func Generate(outputFile string) error {
 	sb.WriteString(ordersStatements)
 	sb.WriteString(timelineStatements)
 	sb.WriteString(itemsStatements)
+	sb.WriteString(availabilityStatements)
 
 	err = os.WriteFile(outputFile, []byte(sb.String()), 0644)
 	if err != nil {

@@ -70,6 +70,10 @@ export function displayHelp(sessionId?: string): void {
   printHelp('  /session pop      - Usuwa ostatnią parę wpisów (TY i asystent).');
   printHelp('  /session clear    - Czyści historię bieżącej sesji.');
   printHelp('  /session new      - Rozpoczyna nową sesję.');
+  printHelp('  /session title    - Wyświetla tytuł bieżącej sesji.');
+  printHelp('  /session rename   - Zmienia tytuł sesji: /session rename <NOWY_TYTUŁ>.');
+  printHelp('\n  /assistant list    - Wyświetla listę dostępnych asystentów.');
+  printHelp('  /assistant switch  - Przełącza asystenta: /assistant switch <ID>.');
   printHelp('  /audio            - TTS: ostatnia odpowiedź asystenta → plik WAV i odtwarzanie.');
 }
 

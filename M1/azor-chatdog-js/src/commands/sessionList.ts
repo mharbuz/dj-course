@@ -18,8 +18,9 @@ export function displaySessionList(): void {
 
   printHelp('\n--- Dostępne zapisane sesje (ID) ---');
   for (const session of sessions) {
+    const titleLabel = session.title || '(brak tytułu)';
     printHelp(
-      `- ID: ${session.session_id} (Wiadomości: ${session.message_count}, Ost. aktywność: ${session.last_modified.toLocaleString()})`
+      `- ID: ${session.session_id} | ${titleLabel} (Wiadomości: ${session.message_count}, Ost. aktywność: ${session.last_modified.toLocaleString()})`
     );
   }
   printHelp('------------------------------------');

@@ -16,6 +16,10 @@ CEL:
 - uświadomić sobie, jak szybko / efektywnie / tanio można postawić "relatywnie mały frontend" przy użyciu dostępnych narzędzi
 - uświadomić sobie, że punkt ciężkości (w budowaniu frontendów) się przesuwa. Gdzie? Zapraszam do dyskusji na discordzie 🤗
 
+Konwersacja z Google Gemini: https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221Yk_8AcmZ_bqA1zTt4kiivL2qQq-J62wz%22%5D,%22action%22:%22open%22,%22userId%22:%22117651972521849216727%22,%22resourceKeys%22:%7B%7D%7D&usp=sharing
+efekt na Bolt.new: https://bolt.new/~/sb1-1zuxraa9
+
+
 # Zadanie 2
 
 **Developer Distractor Destroyer**

@@ -1,3 +1,6 @@
+-- Availability: drop first
+DROP TABLE IF EXISTS resource_availability;
+
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS order_timeline_events;
 DROP TABLE IF EXISTS transportation_orders;
@@ -22,6 +25,8 @@ CREATE TABLE drivers (
     contract_type VARCHAR(20),
     status VARCHAR(20)
 );
+
+-- ---------------------------------------------------------------------------
 
 CREATE TABLE customers (
     id INT PRIMARY KEY,
@@ -76,3 +81,22 @@ CREATE INDEX idx_timeline_order ON order_timeline_events(order_id);
 CREATE INDEX idx_items_order ON order_items(order_id);
 CREATE INDEX idx_orders_customer ON transportation_orders(customer_id);
 CREATE INDEX idx_orders_status ON transportation_orders(status);
+
+-- Availability: (resource_type, resource_id) identify the resource; no FK to drivers/vehicles.
+-- Created after transportation_orders due to FK.
+CREATE TABLE resource_availability (
+    id INT PRIMARY KEY,
+    resource_type VARCHAR(20) NOT NULL,
+    resource_id INT NOT NULL,
+    valid_from TIMESTAMP NOT NULL,
+    valid_to TIMESTAMP NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN (
+        'AVAILABLE',  
+        'RESERVED'
+    )),
+    notes VARCHAR(255) NULL,
+    CONSTRAINT chk_availability_period CHECK (valid_from < valid_to)
+);
+
+CREATE INDEX idx_availability_resource ON resource_availability(resource_type, resource_id);
+CREATE INDEX idx_availability_period ON resource_availability(resource_type, resource_id, valid_from, valid_to);

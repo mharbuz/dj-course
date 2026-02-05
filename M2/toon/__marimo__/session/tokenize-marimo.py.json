@@ -1,0 +1,106 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.19.6"
+  },
+  "cells": [
+    {
+      "id": "MJUe",
+      "code_hash": "40cf0ec7e3ea27e8994f048d71f0d7aa",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"zerknij-do-pliku-homeworkmd-aby-zobaczyc-opis-zadania-domowego\">Zerknij do pliku <code>HOMEWORK.md</code> aby zobaczy\u0107 opis zadania domowego :)</h1></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hbol",
+      "code_hash": "1d0db38904205bec4d6f6f6a1f6cec3e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "3ded264988d4b86be80696967e57f0d3",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "50ea477b1fd8046ecad62848bfd71aba",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "\u2705 Successfully loaded tokenizer: qwen3-4b-tokenizer\n",
+          "mimetype": "text/plain"
+        }
+      ]
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "9ba8b155b33f5e7314ff2cd0f98a1308",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "be089eceef6ec2a40a0d2dfe29c25d0a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "d6ad4cdb9b35a349a58ccfc11a055c70",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-googlesql codehilite\"><pre><span></span><code><span class=\"n\">arch</span>\n<span class=\"n\">\u2192</span><span class=\"w\"> </span><span class=\"kt\">JSON</span><span class=\"w\"> </span><span class=\"n\">compact</span><span class=\"w\">   </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">    </span><span class=\"mf\">100.0</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1099</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">TOON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">89.4</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1229</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">YAML</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">79.5</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1383</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">63.7</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1726</span><span class=\"p\">)</span>\n\n<span class=\"n\">models</span>\n<span class=\"n\">\u2192</span><span class=\"w\"> </span><span class=\"n\">TOON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">    </span><span class=\"mf\">100.0</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">276</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\"> </span><span class=\"n\">compact</span><span class=\"w\">   </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">83.6</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">330</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">YAML</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">74.2</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">372</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">57.3</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">482</span><span class=\"p\">)</span>\n\n<span class=\"n\">mps</span>\n<span class=\"n\">\u2192</span><span class=\"w\"> </span><span class=\"kt\">JSON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">    </span><span class=\"mf\">100.0</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1417</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\"> </span><span class=\"n\">compact</span><span class=\"w\">   </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">    </span><span class=\"mf\">100.0</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1417</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">YAML</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">86.3</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1641</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">TOON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">85.7</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1653</span><span class=\"p\">)</span>\n\n<span class=\"n\">photos</span>\n<span class=\"n\">\u2192</span><span class=\"w\"> </span><span class=\"n\">TOON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">    </span><span class=\"mf\">100.0</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">266888</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\"> </span><span class=\"n\">compact</span><span class=\"w\">   </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">83.9</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">318154</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">YAML</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">75.9</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">351577</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">64.6</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">413153</span><span class=\"p\">)</span>\n\n<span class=\"n\">placeholder</span>\n<span class=\"n\">\u2192</span><span class=\"w\"> </span><span class=\"kt\">JSON</span><span class=\"w\"> </span><span class=\"n\">compact</span><span class=\"w\">   </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">    </span><span class=\"mf\">100.0</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">82</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">TOON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">     </span><span class=\"mf\">98.8</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">83</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">YAML</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">     </span><span class=\"mf\">98.8</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">83</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">86.3</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">95</span><span class=\"p\">)</span>\n\n<span class=\"n\">recipe</span>\n<span class=\"n\">\u2192</span><span class=\"w\"> </span><span class=\"n\">TOON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">    </span><span class=\"mf\">100.0</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">753</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\"> </span><span class=\"n\">compact</span><span class=\"w\">   </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588</span><span class=\"w\">     </span><span class=\"mf\">97.8</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">770</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"n\">YAML</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">89.9</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">838</span><span class=\"p\">)</span>\n<span class=\"w\">  </span><span class=\"kt\">JSON</span><span class=\"w\">           </span><span class=\"n\">\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2591\u2591\u2591\u2591\u2591</span><span class=\"w\">     </span><span class=\"mf\">74.6</span><span class=\"err\">%</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1009</span><span class=\"p\">)</span>\n</code></pre></div></span>"
+          }
+        }
+      ],
+      "console": []
+    }
+  ]
+}

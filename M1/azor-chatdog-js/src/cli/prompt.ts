@@ -6,10 +6,23 @@ import readline from 'readline';
 import inquirer from 'inquirer';
 
 /**
+ * Module-level input history for readline (oldest → newest)
+ */
+let inputHistory: string[] = [];
+
+/**
+ * Seed input history (e.g. from loaded session's user messages)
+ */
+export function setInputHistory(lines: string[]): void {
+  inputHistory = [...lines];
+}
+
+/**
  * Available commands and their subcommands for autocompletion
  */
 const commands: Record<string, string[]> = {
-  '/session': ['list', 'display', 'new', 'clear', 'pop', 'remove'],
+  '/session': ['list', 'display', 'new', 'clear', 'pop', 'remove', 'title', 'rename'],
+  '/assistant': ['list', 'switch'],
   '/switch': [],
   '/help': [],
   '/exit': [],
@@ -61,11 +74,16 @@ export async function getUserInput(prompt: string = 'TY: '): Promise<string> {
       output: process.stdout,
       completer: completer,
       terminal: true,
-    });
+      history: [...inputHistory].reverse(),
+    } as readline.ReadLineOptions);
 
     rl.question(prompt, (answer) => {
       rl.close();
-      resolve(answer.trim());
+      const trimmed = answer.trim();
+      if (trimmed) {
+        inputHistory.push(trimmed);
+      }
+      resolve(trimmed);
     });
   });
 }

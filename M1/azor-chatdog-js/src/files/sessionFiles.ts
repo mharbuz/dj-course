@@ -35,6 +35,39 @@ function timestampedToMessage(msg: TimestampedMessage): Message {
 }
 
 /**
+ * Load full session file data (including title and metadata)
+ */
+export function loadSessionFileData(
+  sessionId: string
+): Result<SessionHistoryFile, string> {
+  const filePath = getSessionFilePath(sessionId);
+
+  if (!fs.existsSync(filePath)) {
+    return {
+      success: false,
+      error: `Session file not found: ${sessionId}`,
+    };
+  }
+
+  try {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const data: SessionHistoryFile = JSON.parse(fileContent);
+    return { success: true, value: data };
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      return {
+        success: false,
+        error: `Invalid JSON in session file: ${sessionId}`,
+      };
+    }
+    return {
+      success: false,
+      error: `Error loading session: ${(error as Error).message}`,
+    };
+  }
+}
+
+/**
  * Load session history from file
  */
 export function loadSessionHistory(
@@ -79,7 +112,9 @@ export function saveSessionHistory(
   sessionId: string,
   history: Message[],
   systemPrompt: string,
-  modelName: string
+  modelName: string,
+  title?: string,
+  assistantId?: string
 ): Result<boolean, string> {
   // Don't save if history is too short
   if (history.length < 2) {
@@ -95,6 +130,8 @@ export function saveSessionHistory(
     session_id: sessionId,
     model: modelName,
     system_role: systemPrompt,
+    ...(title !== undefined && { title }),
+    ...(assistantId !== undefined && { assistant_id: assistantId }),
     history: timestampedHistory,
   };
 
@@ -134,6 +171,8 @@ export function listSessions(): SessionMetadata[] {
             message_count: data.history.length,
             last_modified: stats.mtime,
             first_message: data.history[0]?.text,
+            title: data.title,
+            assistant_id: data.assistant_id,
           });
         } catch {
           // Skip invalid files

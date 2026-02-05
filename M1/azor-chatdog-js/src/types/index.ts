@@ -34,6 +34,8 @@ export interface SessionHistoryFile {
   session_id: string;
   model: string;
   system_role: string;
+  title?: string;
+  assistant_id?: string;
   history: TimestampedMessage[];
 }
 
@@ -58,6 +60,8 @@ export interface SessionMetadata {
   message_count: number;
   last_modified: Date;
   first_message?: string;
+  title?: string;
+  assistant_id?: string;
 }
 
 /**

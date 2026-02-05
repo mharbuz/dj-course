@@ -1,0 +1,245 @@
+openapi: 3.0.1
+info:
+  title: MPS Token Service API
+  description: API for retrieving SSO tokens from MPS service
+  contact:
+    name: SAB OSS Team
+    url: https://sab.example.com
+    email: oss-team@sab.example.com
+  license:
+    name: Proprietary
+    url: https://sab.example.com/licenses
+  version: 1.0.0
+servers:
+- url: /mps
+  description: Default
+security:
+- bearer-jwt: []
+tags:
+- name: Token Management
+  description: API endpoints for SSO token operations
+- name: Cash Balance
+  description: API endpoints for customer balance operations
+paths:
+  /api/v1/tokens/sso:
+    post:
+      tags:
+      - Token Management
+      summary: Get SSO token
+      description: Retrieves an SSO token from MPS for the specified user ID
+      operationId: getSsoToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+        required: true
+      responses:
+        '503':
+          description: MPS service unavailable
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error retrieving token
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '200':
+          description: Token successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /api/v1/balance-fetch:
+    get:
+      tags:
+      - Cash Balance
+      summary: Get customer balance
+      description: Retrieves customer balance from MPS service using CIF number (legalDocumentNumber)
+        extracted from the JWT token in x-hsbc-e2e-trust-token header
+      operationId: getCashBalance
+      responses:
+        '503':
+          description: MPS service unavailable
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error retrieving customer balance
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid request - missing or invalid CIF number in headers
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '200':
+          description: Customer balance successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBalanceResponse'
+  /api/v1/tokens/sso/{userId}:
+    delete:
+      tags:
+      - Token Management
+      summary: Invalidate token
+      description: Invalidates any cached token for the specified user
+      operationId: invalidateToken
+      parameters:
+      - name: userId
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '503':
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid user ID
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '204':
+          description: Token successfully invalidated
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        message:
+          type: string
+        code:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+        traceId:
+          type: string
+    TokenRequest:
+      required:
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Unique identifier of the user requesting a token
+          example: user123
+      description: Token request containing user ID
+    TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The SSO access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwiaWF0IjoxNjc2NDM3OTQ3LCJleHAiOjE2NzY0NDE1NDd9
+        tokenType:
+          type: string
+          description: Type of the token, typically 'Bearer'
+          example: Bearer
+        expiresAt:
+          type: string
+          description: Expiration date and time of the token
+          format: date-time
+        userId:
+          type: string
+          description: User ID associated with this token
+          example: user123
+      description: Response containing SSO token information
+    CurrencyWiseMpsHolding:
+      type: object
+      properties:
+        CURRENCY:
+          type: string
+          description: Currency code
+          example: SAR
+        TOTAL_BALANCE:
+          type: string
+          description: Total balance amount
+          example: '1938802.96'
+        CASH_ACC_NUMBER:
+          type: string
+          description: Cash account number
+          example: C13163390802
+        UNREALIZED_GAIN_LOSS:
+          type: string
+          description: Unrealized gain or loss
+          example: '-882.07'
+        LAST_TRANSACTION_DATE:
+          type: string
+          description: Last transaction date
+          example: 23-04-2025
+      description: Currency-wise MPS holding details
+    CustomerBalanceResponse:
+      type: object
+      properties:
+        REQUEST_REFERENCE_NUMBER:
+          type: string
+          description: Request reference number from the request
+          example: SABOS88831137897486049335
+        SOURCE_ID:
+          type: string
+          description: Source identifier
+          example: OS
+        ERRORCODE:
+          type: string
+          description: Error code if any
+          example: OF2001
+        ERRORDESCRIPTION:
+          type: string
+          description: Error description if any
+          example: Parsing Failed for the API :-null
+        RESPONSETIMESTAMP:
+          type: string
+          description: Response timestamp
+          example: 09-Nov-2025 18-29-22-070
+        RESPONSESTATUS:
+          type: string
+          description: Response status
+          example: '01'
+        CIF_NO:
+          type: string
+          description: Customer CIF number
+          example: '1054551367'
+        CURRENCY_WISE_MPS_HOLDING:
+          type: array
+          description: List of currency-wise MPS holdings
+          items:
+            $ref: '#/components/schemas/CurrencyWiseMpsHolding'
+      description: Response from MPS service containing customer balance information
+  securitySchemes:
+    bearer-jwt:
+      type: http
+      description: JWT token authentication
+      scheme: bearer
+      bearerFormat: JWT
