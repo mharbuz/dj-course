@@ -1,18 +1,25 @@
-FROM node:22-bullseye
+# Stage 1: Build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies with cache mount
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
-# Copy source code
+# Copy source code and build
 COPY . .
+RUN npm run build
 
-# Expose port 5173 (Vite's default port)
-EXPOSE 5173
+# Stage 2: Production
+FROM nginx:alpine
 
-# Start the development server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Copy built assets from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
