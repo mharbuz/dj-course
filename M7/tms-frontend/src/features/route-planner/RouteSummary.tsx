@@ -10,10 +10,10 @@ interface RouteSummaryProps {
   allowReordering?: boolean;
 }
 
-export const RouteSummary: React.FC<RouteSummaryProps> = ({ 
-  route, 
+export const RouteSummary: React.FC<RouteSummaryProps> = ({
+  route,
   onReorderPoints,
-  allowReordering = false 
+  allowReordering = false
 }) => {
   const getEarliestETA = () => {
     const etas = route.points
@@ -40,7 +40,7 @@ export const RouteSummary: React.FC<RouteSummaryProps> = ({
         <MapPin className="w-5 h-5 text-blue-600" />
         Current Route Stops
       </h3>
-      
+
       {route.points.length > 0 ? (
         <div className="space-y-4">
           {/* Route Overview */}
@@ -77,7 +77,7 @@ export const RouteSummary: React.FC<RouteSummaryProps> = ({
                 <Clock className="w-4 h-4" />
                 Schedule Overview
               </h4>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 {route.startTime && (
                   <div className="flex justify-between">
@@ -85,21 +85,21 @@ export const RouteSummary: React.FC<RouteSummaryProps> = ({
                     <span className="font-medium">{formatDateTime(route.startTime)}</span>
                   </div>
                 )}
-                
+
                 {earliestETA && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">First ETA:</span>
                     <span className="font-medium text-green-600">{formatDateTime(earliestETA)}</span>
                   </div>
                 )}
-                
+
                 {latestETD && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Final ETD:</span>
                     <span className="font-medium text-orange-600">{formatDateTime(latestETD)}</span>
                   </div>
                 )}
-                
+
                 {route.estimatedCompletion && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Est. Completion:</span>
@@ -117,7 +117,7 @@ export const RouteSummary: React.FC<RouteSummaryProps> = ({
               {['pickup', 'delivery', 'rest', 'fuel', 'border'].map(type => {
                 const count = route.points.filter(p => p.type === type).length;
                 if (count === 0) return null;
-                
+
                 const colors = {
                   pickup: 'text-green-600',
                   delivery: 'text-amber-600',
@@ -125,7 +125,7 @@ export const RouteSummary: React.FC<RouteSummaryProps> = ({
                   fuel: 'text-red-600',
                   border: 'text-gray-600'
                 };
-                
+
                 return (
                   <div key={type} className="flex justify-between">
                     <span className="text-gray-600 capitalize">{type}:</span>
@@ -159,7 +159,7 @@ export const RouteSummary: React.FC<RouteSummaryProps> = ({
                         {index + 1}
                       </div>
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <h5 className="font-medium text-gray-900 truncate">{point.name}</h5>
@@ -185,7 +185,7 @@ export const RouteSummary: React.FC<RouteSummaryProps> = ({
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex-shrink-0 text-right">
                       <div className="text-sm text-gray-600">
                         {point.coordinates.lat.toFixed(4)}, {point.coordinates.lng.toFixed(4)}

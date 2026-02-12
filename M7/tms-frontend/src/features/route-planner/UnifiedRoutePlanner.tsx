@@ -6,7 +6,7 @@ import { VehicleStatus } from './VehicleStatus';
 import { RouteData, RoutePoint, Vehicle, Coordinates, Shipment } from '../../model/shipments';
 import { Driver, DriverRoute } from '../../model/drivers';
 import { Vehicle as VehicleType } from '../../model/vehicles';
-import { calculateRouteDistance, estimateTravelTime, generateOptimizedRoute, addRestStops } from './routeUtils';
+import { calculateRouteDistance, estimateTravelTime, generateOptimizedRoute, addRestStops } from './route.utils';
 import { ArrowLeft, Filter, Route as RouteIcon, User, Truck, MapPin, Clock, Search, X, Navigation, AlertTriangle, CheckCircle } from 'lucide-react';
 
 export type RouteContext = 'active-shipments' | 'driver-routes' | 'vehicle-routes' | 'route-planning';
@@ -50,7 +50,7 @@ const convertDriverRouteToShipment = (driverRoute: DriverRoute, driver: Driver):
 
   const vehicle: Vehicle = {
     id: `driver-vehicle-${driver.id}`,
-    coordinates: driver.currentLocation ? 
+    coordinates: driver.currentLocation ?
       { lat: driver.currentLocation.lat, lng: driver.currentLocation.lng } :
       { lat: 52.2297, lng: 21.0122 },
     heading: 180,
@@ -66,7 +66,7 @@ const convertDriverRouteToShipment = (driverRoute: DriverRoute, driver: Driver):
     vehicle,
     totalDistance: driverRoute.distance,
     estimatedDuration: Math.floor(driverRoute.distance / 80 * 60),
-    status: driverRoute.status === 'active' ? 'active' : 
+    status: driverRoute.status === 'active' ? 'active' :
             driverRoute.status === 'completed' ? 'completed' : 'planned',
     startTime: driverRoute.startDate,
     estimatedCompletion: driverRoute.endDate
@@ -87,19 +87,19 @@ const convertDriverRouteToShipment = (driverRoute: DriverRoute, driver: Driver):
 const generateVehicleRouteShipments = (vehicle: VehicleType): Shipment[] => {
   const routes: Shipment[] = [];
   const now = new Date();
-  
+
   // Generate some sample routes for the vehicle
   for (let i = 0; i < 8; i++) {
     const startDate = new Date(now.getTime() - (i * 5 + Math.random() * 3) * 24 * 60 * 60 * 1000);
     const endDate = new Date(startDate.getTime() + (1 + Math.random() * 2) * 24 * 60 * 60 * 1000);
-    
+
     const origins = ['Warszawa', 'Kraków', 'Gdańsk', 'Wrocław', 'Poznań'];
     const destinations = ['Łódź', 'Szczecin', 'Lublin', 'Katowice', 'Bydgoszcz'];
-    
+
     const origin = origins[Math.floor(Math.random() * origins.length)];
     const destination = destinations[Math.floor(Math.random() * destinations.length)];
     const distance = Math.floor(Math.random() * 800 + 200);
-    
+
     const routePoints: RoutePoint[] = [
       {
         id: `vehicle-route-${vehicle.id}-${i}-start`,
@@ -123,7 +123,7 @@ const generateVehicleRouteShipments = (vehicle: VehicleType): Shipment[] => {
 
     const vehicleForRoute: Vehicle = {
       id: vehicle.id,
-      coordinates: vehicle.currentLocation ? 
+      coordinates: vehicle.currentLocation ?
         { lat: vehicle.currentLocation.lat, lng: vehicle.currentLocation.lng } :
         { lat: 52.2297, lng: 21.0122 },
       heading: 180,
@@ -154,7 +154,7 @@ const generateVehicleRouteShipments = (vehicle: VehicleType): Shipment[] => {
       dueDate: endDate
     });
   }
-  
+
   return routes.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 };
 
@@ -253,21 +253,21 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
     switch (context) {
       case 'route-planning':
         return []; // No shipments in planning mode
-      
+
       case 'driver-routes':
         if (contextEntity && 'routes' in contextEntity) {
-          return (contextEntity as Driver).routes.map(route => 
+          return (contextEntity as Driver).routes.map(route =>
             convertDriverRouteToShipment(route, contextEntity as Driver)
           );
         }
         return [];
-      
+
       case 'vehicle-routes':
         if (contextEntity && 'plateNumber' in contextEntity) {
           return generateVehicleRouteShipments(contextEntity as VehicleType);
         }
         return [];
-      
+
       case 'active-shipments':
       default:
         return initialShipments;
@@ -280,7 +280,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
   useEffect(() => {
     const newShipments = getContextualShipments();
     setContextualShipments(newShipments);
-    
+
     if (context === 'route-planning') {
       setSelectedShipment(planningRoute);
     } else if (newShipments.length > 0) {
@@ -310,7 +310,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
         });
     } else if (context === 'vehicle-routes') {
       vehicles
-        .filter(vehicle => 
+        .filter(vehicle =>
           vehicle.plateNumber.toLowerCase().includes(entitySearchTerm.toLowerCase()) ||
           `${vehicle.make} ${vehicle.model}`.toLowerCase().includes(entitySearchTerm.toLowerCase())
         )
@@ -390,7 +390,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
   const handleAddPoint = useCallback((coordinates: Coordinates, type: RoutePoint['type']) => {
     console.log('handleAddPoint called:', { coordinates, type, context });
-    
+
     const targetShipment = context === 'route-planning' ? planningRoute : selectedShipment;
     if (!targetShipment) {
       console.log('No target shipment found');
@@ -412,7 +412,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
     const updateFunction = (prev: Shipment | null) => {
       if (!prev) return prev;
-      
+
       const newPoints = [...prev.route.points, newPoint];
       const totalDistance = calculateRouteDistance(newPoints);
       const estimatedDuration = estimateTravelTime(totalDistance);
@@ -450,7 +450,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
     const updateFunction = (prev: Shipment | null) => {
       if (!prev) return prev;
-      
+
       const newPoints = prev.route.points.filter(p => p.id !== pointId);
       const totalDistance = calculateRouteDistance(newPoints);
       const estimatedDuration = estimateTravelTime(totalDistance);
@@ -484,8 +484,8 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
     const updateFunction = (prev: Shipment | null) => {
       if (!prev) return prev;
-      
-      const newPoints = prev.route.points.map(p => 
+
+      const newPoints = prev.route.points.map(p =>
         p.id === updatedPoint.id ? updatedPoint : p
       );
       const totalDistance = calculateRouteDistance(newPoints);
@@ -520,7 +520,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
     const updateFunction = (prev: Shipment | null) => {
       if (!prev) return prev;
-      
+
       const totalDistance = calculateRouteDistance(newPoints);
       const estimatedDuration = estimateTravelTime(totalDistance);
 
@@ -553,7 +553,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
     const updateFunction = (prev: Shipment | null) => {
       if (!prev) return prev;
-      
+
       const optimizedPoints = generateOptimizedRoute(prev.route.points);
       const totalDistance = calculateRouteDistance(optimizedPoints);
       const estimatedDuration = estimateTravelTime(totalDistance);
@@ -587,7 +587,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
     const updateFunction = (prev: Shipment | null) => {
       if (!prev) return prev;
-      
+
       const pointsWithRest = addRestStops(prev.route.points);
       const totalDistance = calculateRouteDistance(pointsWithRest);
       const estimatedDuration = estimateTravelTime(totalDistance);
@@ -627,13 +627,13 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
   // Filter shipments based on search and status
   const filteredShipments = contextualShipments.filter(shipment => {
-    const matchesSearch = 
+    const matchesSearch =
       shipment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       shipment.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
       shipment.route.vehicle.driver.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'all' || shipment.route.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -642,12 +642,12 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
       case 'route-planning':
         return 'Route Planning';
       case 'driver-routes':
-        return contextEntity ? 
-          `Driver Routes - ${(contextEntity as Driver).name}` : 
+        return contextEntity ?
+          `Driver Routes - ${(contextEntity as Driver).name}` :
           'Driver Routes';
       case 'vehicle-routes':
-        return contextEntity ? 
-          `Vehicle Routes - ${(contextEntity as VehicleType).plateNumber}` : 
+        return contextEntity ?
+          `Vehicle Routes - ${(contextEntity as VehicleType).plateNumber}` :
           'Vehicle Routes';
       case 'active-shipments':
       default:
@@ -660,11 +660,11 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
       case 'route-planning':
         return 'Create and optimize new routes with advanced planning tools';
       case 'driver-routes':
-        return contextEntity ? 
+        return contextEntity ?
           `View and track routes assigned to ${(contextEntity as Driver).name}` :
           'Select a driver to view their routes';
       case 'vehicle-routes':
-        return contextEntity ? 
+        return contextEntity ?
           `View and track routes completed by ${(contextEntity as VehicleType).plateNumber}` :
           'Select a vehicle to view its routes';
       case 'active-shipments':
@@ -762,7 +762,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
                       </button>
                     )}
                   </div>
-                  
+
                   {/* Dropdown with suggestions */}
                   {showEntityDropdown && entitySuggestions.length > 0 && (
                     <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
@@ -773,8 +773,8 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
                           className="w-full px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none text-sm border-b border-gray-100 last:border-b-0"
                         >
                           <div className="flex items-center gap-2">
-                            {suggestion.type === 'driver' ? 
-                              <User className="w-4 h-4 text-blue-500" /> : 
+                            {suggestion.type === 'driver' ?
+                              <User className="w-4 h-4 text-blue-500" /> :
                               <Truck className="w-4 h-4 text-purple-500" />
                             }
                             <span className="font-medium">{suggestion.name}</span>
@@ -809,7 +809,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     />
                   </div>
-                  
+
                   {/* Status Filter */}
                   <div className="relative">
                     <Filter className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -854,7 +854,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
                  context === 'driver-routes' ? 'Driver Routes' :
                  'Vehicle Routes'}
               </h2>
-              
+
               {/* Scrollable container with limited height */}
               <div className="max-h-80 overflow-y-auto pr-2 -mr-2">
                 <div className="grid grid-cols-1 gap-3">
@@ -877,7 +877,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
                           {shipment.route.status === 'planned' && <Clock className="w-4 h-4 text-gray-600" />}
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600 truncate">{shipment.customer}</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -889,7 +889,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
                           {shipment.priority.toUpperCase()}
                         </span>
                       </div>
-                      
+
                       <div className="mt-2 text-xs text-gray-500">
                         {shipment.route.points.length} stops • {shipment.route.totalDistance.toFixed(0)} km
                       </div>
@@ -897,7 +897,7 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
                   ))}
                 </div>
               </div>
-              
+
               {/* Show scroll indicator if there are more than 3 items */}
               {filteredShipments.length > 3 && (
                 <div className="mt-2 text-xs text-gray-500 text-center">
@@ -1013,8 +1013,8 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
           {/* Route Summary - Now below the map with more space and drag & drop */}
           {currentRoute && (
-            <RouteSummary 
-              route={currentRoute.route} 
+            <RouteSummary
+              route={currentRoute.route}
               onReorderPoints={isEditingAllowed ? handleReorderPoints : undefined}
               allowReordering={isEditingAllowed}
             />
@@ -1024,8 +1024,8 @@ export const UnifiedRoutePlanner: React.FC<UnifiedRoutePlannerProps> = ({
 
       {/* Click outside to close dropdown */}
       {showEntityDropdown && (
-        <div 
-          className="fixed inset-0 z-5" 
+        <div
+          className="fixed inset-0 z-5"
           onClick={() => setShowEntityDropdown(false)}
         />
       )}

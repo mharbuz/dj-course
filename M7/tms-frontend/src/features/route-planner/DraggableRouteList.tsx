@@ -44,7 +44,7 @@ export const DraggableRouteList: React.FC<DraggableRouteListProps> = ({
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX;
     const y = e.clientY;
-    
+
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
       setDragOverIndex(null);
     }
@@ -52,21 +52,21 @@ export const DraggableRouteList: React.FC<DraggableRouteListProps> = ({
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
-    
+
     if (draggedIndex === null || draggedIndex === dropIndex) {
       return;
     }
 
     const newPoints = [...points];
     const draggedPoint = newPoints[draggedIndex];
-    
+
     // Remove the dragged item
     newPoints.splice(draggedIndex, 1);
-    
+
     // Insert at the new position
     const insertIndex = draggedIndex < dropIndex ? dropIndex - 1 : dropIndex;
     newPoints.splice(insertIndex, 0, draggedPoint);
-    
+
     onReorderPoints(newPoints);
     setDraggedIndex(null);
     setDragOverIndex(null);
@@ -90,7 +90,7 @@ export const DraggableRouteList: React.FC<DraggableRouteListProps> = ({
         <ArrowUpDown className="w-4 h-4 text-gray-500" />
         <span className="text-sm text-gray-600">Drag and drop to reorder route points</span>
       </div>
-      
+
       <div className="space-y-2">
         {points.map((point, index) => (
           <div
@@ -115,7 +115,7 @@ export const DraggableRouteList: React.FC<DraggableRouteListProps> = ({
           </div>
         ))}
       </div>
-      
+
       {/* Drop zone at the end */}
       <div
         onDragOver={handleDragOver}

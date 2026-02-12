@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { RouteData, RoutePoint } from '../../model/shipments';
 import { Plus, Route, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
-import { calculateRouteDistance } from './routeUtils';
 
 interface RouteControlsProps {
   route: RouteData;
@@ -36,10 +35,10 @@ export const RouteControls: React.FC<RouteControlsProps> = ({
     const totalDistance = route.totalDistance;
     const estimatedDrivingTime = route.estimatedDuration;
     const restStops = route.points.filter(p => p.type === 'rest').length;
-    
+
     // EU regulation: 45min break after 4.5h driving, or every ~360km
     const requiredRestStops = Math.floor(Math.max(estimatedDrivingTime / 270, totalDistance / 360));
-    
+
     return requiredRestStops > restStops;
   };
 
@@ -47,16 +46,16 @@ export const RouteControls: React.FC<RouteControlsProps> = ({
     const totalDistance = route.totalDistance;
     const estimatedDrivingTime = route.estimatedDuration;
     const restStops = route.points.filter(p => p.type === 'rest').length;
-    
+
     const requiredByTime = Math.floor(estimatedDrivingTime / 270);
     const requiredByDistance = Math.floor(totalDistance / 360);
     const requiredRestStops = Math.max(requiredByTime, requiredByDistance);
-    
+
     if (requiredRestStops > restStops) {
       const missing = requiredRestStops - restStops;
       return `This route requires ${missing} additional mandatory rest stop${missing > 1 ? 's' : ''} (EU regulation: 45min break every 4.5h driving)`;
     }
-    
+
     return null;
   };
 
@@ -67,7 +66,7 @@ export const RouteControls: React.FC<RouteControlsProps> = ({
           <Route className="w-5 h-5 text-blue-600" />
           Route Planning
         </h2>
-        
+
         {!showAddOptions ? (
           <button
             onClick={() => setShowAddOptions(true)}
@@ -88,7 +87,7 @@ export const RouteControls: React.FC<RouteControlsProps> = ({
                 <ChevronUp className="w-4 h-4" />
               </button>
             </div>
-            
+
             <div className="grid grid-cols-1 gap-2">
               {pointTypes.map(({ type, label, icon, color }) => (
                 <button
@@ -103,7 +102,7 @@ export const RouteControls: React.FC<RouteControlsProps> = ({
             </div>
           </div>
         )}
-        
+
         <div className="mt-4 space-y-2">
           <button
             onClick={onOptimizeRoute}

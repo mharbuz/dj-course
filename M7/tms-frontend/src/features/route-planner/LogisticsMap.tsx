@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { RoutePoint, Vehicle, Coordinates } from '../../model/shipments';
-import { createCustomIcon, getPointColor, defaultMapCenter, defaultZoom } from './mapUtils';
+import { createCustomIcon, getPointColor, defaultMapCenter, defaultZoom } from './map.utils';
 import { PointTooltip } from './PointTooltip';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 
@@ -78,12 +78,12 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
 
     const handleMapClick = (e: L.LeafletMouseEvent) => {
       console.log('Map clicked:', { pendingPointType, onPointAdd, coordinates: { lat: e.latlng.lat, lng: e.latlng.lng } });
-      
+
       if (pendingPointType && onPointAdd) {
         console.log('Adding point:', pendingPointType, { lat: e.latlng.lat, lng: e.latlng.lng });
         onPointAdd({ lat: e.latlng.lat, lng: e.latlng.lng }, pendingPointType);
       }
-      
+
       // Hide tooltip when clicking on map
       setSelectedPoint(null);
       setTooltipPosition(null);
@@ -91,7 +91,7 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
 
     // Remove existing click handlers
     mapInstanceRef.current.off('click');
-    
+
     // Add new click handler
     mapInstanceRef.current.on('click', handleMapClick);
 
@@ -180,7 +180,7 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
     const vehicleIcon = createCustomIcon('truck', '#F97316');
     vehicleMarkerRef.current = L.marker(
       [vehicle.coordinates.lat, vehicle.coordinates.lng],
-      { 
+      {
         icon: vehicleIcon,
         zIndexOffset: 1000 // Ensure vehicle is always on top
       }
@@ -201,7 +201,7 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
       points.forEach(point => {
         L.marker([point.coordinates.lat, point.coordinates.lng]).addTo(group);
       });
-      
+
       // Include vehicle in bounds
       L.marker([vehicle.coordinates.lat, vehicle.coordinates.lng]).addTo(group);
 
@@ -241,12 +241,12 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
 
   return (
     <div className="relative w-full h-full">
-      <div 
-        ref={mapRef} 
+      <div
+        ref={mapRef}
         className="w-full h-full rounded-lg overflow-hidden shadow-lg"
         style={{ minHeight: '500px' }}
       />
-      
+
       {/* Custom map styles */}
       <style>
         {`
@@ -261,26 +261,26 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
             align-items: center;
             justify-content: center;
           }
-          
+
           .marker-icon {
             transform: rotate(45deg);
             font-size: 14px;
           }
-          
+
           .custom-div-icon {
             background: transparent !important;
             border: none !important;
           }
-          
+
           .leaflet-container {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
           }
-          
+
           .leaflet-control-zoom {
             border: none !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
           }
-          
+
           .leaflet-control-zoom a {
             background: white !important;
             border: none !important;
@@ -288,14 +288,14 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
             font-weight: 600 !important;
             transition: all 0.2s ease !important;
           }
-          
+
           .leaflet-control-zoom a:hover {
             background: #F3F4F6 !important;
             color: #1F2937 !important;
           }
         `}
       </style>
-      
+
       {/* Persistent Tooltip */}
       {selectedPoint && tooltipPosition && (
         <div
@@ -306,7 +306,7 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
             transform: 'translateY(-100%)'
           }}
         >
-          <PointTooltip 
+          <PointTooltip
             point={selectedPoint}
             onEdit={onPointEdit}
             onDelete={handleDeleteClick}
@@ -314,7 +314,7 @@ export const LogisticsMap: React.FC<LogisticsMapProps> = ({
           />
         </div>
       )}
-      
+
       {/* Map overlay for pending point type */}
       {pendingPointType && (
         <div className="absolute top-4 left-4 z-[1000] bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg animate-pulse">

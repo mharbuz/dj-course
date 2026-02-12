@@ -29,7 +29,7 @@ export const VehicleStatus: React.FC<VehicleStatusProps> = ({ vehicle }) => {
         <Truck className="w-5 h-5 text-blue-600" />
         Vehicle Status
       </h3>
-      
+
       <div className="space-y-4">
         {/* Driver Information */}
         <div className="flex items-center justify-between">

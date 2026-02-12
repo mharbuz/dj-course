@@ -42,7 +42,7 @@ export const ShipmentSelector: React.FC<ShipmentSelectorProps> = ({
         <Package className="w-5 h-5 text-blue-600" />
         Active Shipments
       </h2>
-      
+
       <div className="grid grid-cols-1 gap-3">
         {shipments.map((shipment) => (
           <button
@@ -58,14 +58,14 @@ export const ShipmentSelector: React.FC<ShipmentSelectorProps> = ({
               <h3 className="font-medium text-gray-900">{shipment.name}</h3>
               {getStatusIcon(shipment.route.status)}
             </div>
-            
+
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">{shipment.customer}</span>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(shipment.priority)}`}>
                 {shipment.priority.toUpperCase()}
               </span>
             </div>
-            
+
             <div className="mt-2 text-xs text-gray-500">
               {shipment.route.points.length} stops • {shipment.route.totalDistance.toFixed(0)} km
             </div>

@@ -52,8 +52,8 @@ export const DraggableRoutePoint: React.FC<DraggableRoutePointProps> = ({
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, index)}
       className={`flex items-center gap-4 p-3 border border-gray-200 rounded-lg transition-all cursor-move ${
-        isDragging 
-          ? 'opacity-50 scale-95 shadow-lg border-blue-300 bg-blue-50' 
+        isDragging
+          ? 'opacity-50 scale-95 shadow-lg border-blue-300 bg-blue-50'
           : 'hover:bg-gray-50 hover:border-gray-300 hover:shadow-md'
       }`}
     >
@@ -68,7 +68,7 @@ export const DraggableRoutePoint: React.FC<DraggableRoutePointProps> = ({
           {index + 1}
         </div>
       </div>
-      
+
       {/* Point Information */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
@@ -95,7 +95,7 @@ export const DraggableRoutePoint: React.FC<DraggableRoutePointProps> = ({
           )}
         </div>
       </div>
-      
+
       {/* Coordinates */}
       <div className="flex-shrink-0 text-right">
         <div className="text-sm text-gray-600 flex items-center gap-1">
