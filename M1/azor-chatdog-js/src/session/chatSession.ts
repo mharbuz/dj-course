@@ -3,6 +3,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
+import type { LangfuseTraceClient } from 'langfuse';
 import type { Assistant } from '../assistant/assistant.js';
 import type {
   ILLMClient,
@@ -11,6 +12,8 @@ import type {
   LLMResponse,
   TokenInfo,
   Result,
+  ToolDefinition,
+  ToolResponse,
 } from '../types/index.js';
 import { loadSessionFileData, saveSessionHistory } from '../files/sessionFiles.js';
 import { appendToWAL } from '../files/wal.js';
@@ -20,6 +23,7 @@ import { GeminiLLMClient } from '../llm/geminiClient.js';
 import { LlamaClient } from '../llm/llamaClient.js';
 import { OllamaClient } from '../llm/ollamaClient.js';
 import { generateTitle, DEFAULT_TITLE } from './titleGenerator.js';
+import { getLangfuse } from '../observability/langfuse.js';
 
 /**
  * Engine mapping for LLM client selection
@@ -50,12 +54,15 @@ export class ChatSession {
   private assistant: Assistant;
   private _title: string;
   private _titleGenerating: boolean = false;
+  private tools: ToolDefinition[];
+  private activeTrace: LangfuseTraceClient | null = null;
 
-  constructor(assistant: Assistant, sessionId?: string, history?: Message[], title?: string) {
+  constructor(assistant: Assistant, sessionId?: string, history?: Message[], title?: string, tools?: ToolDefinition[]) {
     this.sessionId = sessionId || uuidv4();
     this.assistant = assistant;
     this.history = history || [];
     this._title = title || DEFAULT_TITLE;
+    this.tools = tools || [];
 
     // Initialize LLM client
     this.llmClient = getSelectedLLMClient();
@@ -63,7 +70,9 @@ export class ChatSession {
     // Create chat session
     this.llmChatSession = this.llmClient.createChatSession(
       assistant.systemPrompt,
-      this.history
+      this.history,
+      undefined,
+      this.tools
     );
   }
 
@@ -72,7 +81,8 @@ export class ChatSession {
    */
   static loadFromFile(
     assistant: Assistant,
-    sessionId: string
+    sessionId: string,
+    tools?: ToolDefinition[]
   ): Result<ChatSession, string> {
     const fileDataResult = loadSessionFileData(sessionId);
 
@@ -91,7 +101,7 @@ export class ChatSession {
       ? getAssistant(fileData.assistant_id) ?? assistant
       : assistant;
 
-    const session = new ChatSession(savedAssistant, sessionId, history, fileData.title);
+    const session = new ChatSession(savedAssistant, sessionId, history, fileData.title, tools);
 
     // Old sessions without title — schedule auto-generation from first user message
     if (!fileData.title && history.length > 0) {
@@ -123,9 +133,39 @@ export class ChatSession {
    */
   async sendMessage(text: string): Promise<LLMResponse> {
     const isFirstExchange = this.history.length === 0;
+    const modelName = this.llmClient.getModelName();
+
+    // Create Langfuse trace for this turn
+    const langfuse = getLangfuse();
+    const trace = langfuse?.trace({
+      name: 'chat-interaction',
+      sessionId: this.sessionId,
+      input: text,
+      metadata: { model: modelName, assistant: this.assistant.id, systemPrompt: this.assistant.systemPrompt },
+    });
+
+    // Create generation span around LLM call
+    const startTime = new Date();
+    const generation = trace?.generation({
+      name: 'llm-response',
+      model: modelName,
+      input: text,
+      startTime,
+    });
 
     // Send message to LLM
     const response = await this.llmChatSession.sendMessage(text);
+
+    generation?.end({ output: response.text });
+
+    // If response has tool calls, store trace for continued use in sendToolResponses
+    if (response.toolCalls && response.toolCalls.length > 0) {
+      this.activeTrace = trace ?? null;
+      return response;
+    }
+
+    // Finalize trace
+    trace?.update({ output: response.text });
 
     // Sync history from LLM session (it updates internally)
     this.history = this.llmChatSession.getHistory();
@@ -137,12 +177,72 @@ export class ChatSession {
       text,
       response.text,
       totalTokens,
-      this.llmClient.getModelName()
+      modelName
     );
 
     // Generate title after first exchange
     if (isFirstExchange && this._title === DEFAULT_TITLE) {
       this.triggerTitleGeneration(text);
+    }
+
+    return response;
+  }
+
+  /**
+   * Send tool responses back to LLM
+   */
+  async sendToolResponses(toolResponses: ToolResponse[]): Promise<LLMResponse> {
+    const isFirstExchange = this.history.length === 0;
+    const trace = this.activeTrace;
+    const modelName = this.llmClient.getModelName();
+
+    // Add span for tool execution on the active trace
+    trace?.span({
+      name: 'tool-execution',
+      input: toolResponses.map((r) => r.name),
+      output: toolResponses.map((r) => ({ name: r.name, result: r.result })),
+    });
+
+    // Create generation for the follow-up LLM call
+    const startTime = new Date();
+    const generation = trace?.generation({
+      name: 'llm-tool-followup',
+      model: modelName,
+      input: toolResponses,
+      startTime,
+    });
+
+    const response = await this.llmChatSession.sendToolResponses(toolResponses);
+
+    generation?.end({ output: response.text });
+
+    // If there are more tool calls, keep the trace active
+    if (response.toolCalls && response.toolCalls.length > 0) {
+      return response;
+    }
+
+    // Finalize trace and clear
+    trace?.update({ output: response.text });
+    this.activeTrace = null;
+
+    // Sync history from LLM session
+    this.history = this.llmChatSession.getHistory();
+
+    // Log to WAL — use the pending user text (now in history) for prompt
+    const totalTokens = this.countTokens();
+    const lastUserMsg = [...this.history].reverse().find((m) => m.role === 'user');
+    const promptText = lastUserMsg?.parts[0]?.text || '';
+    appendToWAL(
+      this.sessionId,
+      promptText,
+      response.text,
+      totalTokens,
+      modelName
+    );
+
+    // Generate title after first exchange
+    if (isFirstExchange && this._title === DEFAULT_TITLE && promptText) {
+      this.triggerTitleGeneration(promptText);
     }
 
     return response;
@@ -163,7 +263,9 @@ export class ChatSession {
     // Recreate chat session with empty history
     this.llmChatSession = this.llmClient.createChatSession(
       this.assistant.systemPrompt,
-      []
+      [],
+      undefined,
+      this.tools
     );
   }
 
@@ -181,7 +283,9 @@ export class ChatSession {
     // Recreate chat session with updated history
     this.llmChatSession = this.llmClient.createChatSession(
       this.assistant.systemPrompt,
-      this.history
+      this.history,
+      undefined,
+      this.tools
     );
 
     return true;
@@ -243,7 +347,9 @@ export class ChatSession {
     // Reinitialize LLM session with the new system prompt and full history
     this.llmChatSession = this.llmClient.createChatSession(
       newAssistant.systemPrompt,
-      this.history
+      this.history,
+      undefined,
+      this.tools
     );
   }
 

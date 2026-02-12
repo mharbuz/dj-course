@@ -10,6 +10,9 @@ import { getUserInput, setInputHistory } from './cli/prompt.js';
 import { printAssistant, printInfo, printError } from './cli/console.js';
 import { printWelcome } from './commands/welcome.js';
 import { handleCommand } from './commandHandler.js';
+import { getAllTools } from './tools/toolRegistry.js';
+import { executeToolCalls } from './tools/toolExecutor.js';
+import { shutdownLangfuse } from './observability/langfuse.js';
 
 // Load environment variables
 config();
@@ -24,8 +27,11 @@ export function initChat(): void {
   // Create assistant
   const assistant = createAzorAssistant();
 
+  // Get all available tools
+  const tools = getAllTools();
+
   // Get session manager
-  const manager = getSessionManager(assistant);
+  const manager = getSessionManager(assistant, tools);
 
   // Get CLI session ID if provided
   const cliSessionId = getSessionIdFromCLI();
@@ -61,7 +67,7 @@ export function initChat(): void {
     console.log('\n');
     printInfo('Saving session and exiting...');
     manager.cleanupAndSave();
-    process.exit(0);
+    shutdownLangfuse().finally(() => process.exit(0));
   });
 }
 
@@ -70,7 +76,8 @@ export function initChat(): void {
  */
 export async function mainLoop(): Promise<void> {
   const assistant = createAzorAssistant();
-  const manager = getSessionManager(assistant);
+  const tools = getAllTools();
+  const manager = getSessionManager(assistant, tools);
 
   while (true) {
     try {
@@ -84,7 +91,7 @@ export async function mainLoop(): Promise<void> {
 
       // Handle commands
       if (userInput.startsWith('/')) {
-        const shouldExit = handleCommand(userInput, manager);
+        const shouldExit = await handleCommand(userInput, manager);
         if (shouldExit) {
           break;
         }
@@ -100,7 +107,13 @@ export async function mainLoop(): Promise<void> {
       };
 
       // Send message to LLM
-      const response = await session.sendMessage(userInput);
+      let response = await session.sendMessage(userInput);
+
+      // Clarification loop — handle tool calls
+      while (response.toolCalls && response.toolCalls.length > 0) {
+        const toolResponses = await executeToolCalls(response.toolCalls);
+        response = await session.sendToolResponses(toolResponses);
+      }
 
       // Get token information
       const tokenInfo = session.getTokenInfo();
@@ -124,4 +137,5 @@ export async function mainLoop(): Promise<void> {
 
   // Cleanup on exit
   manager.cleanupAndSave();
+  await shutdownLangfuse();
 }

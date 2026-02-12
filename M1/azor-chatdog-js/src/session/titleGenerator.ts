@@ -10,6 +10,7 @@ import type { ILLMClient } from '../types/index.js';
 import { GeminiLLMClient } from '../llm/geminiClient.js';
 import { OllamaClient } from '../llm/ollamaClient.js';
 import { LlamaClient } from '../llm/llamaClient.js';
+import { getLangfuse } from '../observability/langfuse.js';
 
 const DEFAULT_TITLE = 'Nowy azor-chat';
 const FALLBACK_MAX_LENGTH = 40;
@@ -77,15 +78,35 @@ export async function generateTitle(firstUserMessage: string): Promise<string> {
 
   try {
     const client = getTitleLLMClient();
+    const prompt = `Nadaj tytuł konwersacji zaczynającej się od: "${firstUserMessage}"`;
+
+    // Lightweight Langfuse trace for title generation
+    const langfuse = getLangfuse();
+    const trace = langfuse?.trace({
+      name: 'title-generation',
+      input: firstUserMessage,
+    });
+    const startTime = new Date();
+    const generation = trace?.generation({
+      name: 'title-llm-call',
+      model: client.getModelName(),
+      input: prompt,
+      startTime,
+    });
+
     const session = client.createChatSession(TITLE_SYSTEM_PROMPT);
-    const response = await session.sendMessage(
-      `Nadaj tytuł konwersacji zaczynającej się od: "${firstUserMessage}"`
-    );
+    const response = await session.sendMessage(prompt);
+
     // The model may output chain-of-thought before the actual title.
     // Take only the last non-empty line as the title.
     const lines = response.text.split('\n').map(l => l.trim()).filter(Boolean);
     const rawTitle = (lines[lines.length - 1] || '').replace(/["']/g, '').trim();
-    return rawTitle || fallbackTitle(firstUserMessage);
+    const title = rawTitle || fallbackTitle(firstUserMessage);
+
+    generation?.end({ output: title });
+    trace?.update({ output: title });
+
+    return title;
   } catch {
     return fallbackTitle(firstUserMessage);
   }

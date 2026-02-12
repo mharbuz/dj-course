@@ -8,8 +8,40 @@ import type {
   ILLMChatSession,
   Message,
   LLMResponse,
+  ToolDefinition,
+  ToolResponse,
 } from '../types/index.js';
 import { validateGeminiConfig } from './geminiValidation.js';
+
+/**
+ * Convert our ToolDefinition[] to Gemini functionDeclarations format
+ */
+function convertToolsToGeminiFormat(tools: ToolDefinition[]): any[] {
+  return tools.map((tool) => {
+    const properties: Record<string, any> = {};
+    const required: string[] = [];
+
+    for (const [paramName, param] of Object.entries(tool.parameters)) {
+      properties[paramName] = {
+        type: param.type.toUpperCase(),
+        description: param.description,
+      };
+      if (param.required) {
+        required.push(paramName);
+      }
+    }
+
+    return {
+      name: tool.name,
+      description: tool.description,
+      parameters: {
+        type: 'OBJECT',
+        properties,
+        required,
+      },
+    };
+  });
+}
 
 /**
  * Wrapper for Gemini chat session to provide universal interface
@@ -17,6 +49,7 @@ import { validateGeminiConfig } from './geminiValidation.js';
 class GeminiChatSessionWrapper implements ILLMChatSession {
   private geminiSession: any;
   private history: Message[] = [];
+  private pendingUserText?: string;
 
   constructor(geminiSession: any, initialHistory?: Message[]) {
     this.geminiSession = geminiSession;
@@ -26,6 +59,22 @@ class GeminiChatSessionWrapper implements ILLMChatSession {
   async sendMessage(text: string): Promise<LLMResponse> {
     const result = await this.geminiSession.sendMessage(text);
     const response = result.response;
+
+    // Check for function calls
+    const functionCalls = response.functionCalls?.();
+    if (functionCalls && functionCalls.length > 0) {
+      // Save pending user text — do NOT add to history yet
+      this.pendingUserText = text;
+      return {
+        text: '',
+        toolCalls: functionCalls.map((fc: any) => ({
+          name: fc.name,
+          args: fc.args || {},
+        })),
+      };
+    }
+
+    // Normal text response
     const responseText = response.text();
 
     // Add to history
@@ -41,14 +90,41 @@ class GeminiChatSessionWrapper implements ILLMChatSession {
     return { text: responseText };
   }
 
+  async sendToolResponses(toolResponses: ToolResponse[]): Promise<LLMResponse> {
+    // Build function response parts for Gemini
+    const functionResponseParts = toolResponses.map((tr) => ({
+      functionResponse: {
+        name: tr.name,
+        response: tr.result,
+      },
+    }));
+
+    const result = await this.geminiSession.sendMessage(functionResponseParts);
+    const response = result.response;
+    const responseText = response.text();
+
+    // Now add to history: user (pending) + model (final)
+    if (this.pendingUserText !== undefined) {
+      this.history.push({
+        role: 'user',
+        parts: [{ text: this.pendingUserText }],
+      });
+    }
+    this.history.push({
+      role: 'model',
+      parts: [{ text: responseText }],
+    });
+
+    this.pendingUserText = undefined;
+
+    return { text: responseText };
+  }
+
   getHistory(): Message[] {
     return this.history;
   }
 }
 
-/**
- * Gemini LLM Client implementation
- */
 /**
  * Generation parameters for Gemini
  */
@@ -92,7 +168,8 @@ export class GeminiLLMClient implements ILLMClient {
   createChatSession(
     systemInstruction: string,
     history?: Message[],
-    thinkingBudget?: number
+    thinkingBudget?: number,
+    tools?: ToolDefinition[]
   ): ILLMChatSession {
     // Convert universal Message format to Gemini Content format
     const geminiHistory: Content[] = (history || []).map((msg) => ({
@@ -108,6 +185,13 @@ export class GeminiLLMClient implements ILLMClient {
         parts: [{ text: systemInstruction }],
       },
     };
+
+    // Add tools as functionDeclarations
+    if (tools && tools.length > 0) {
+      modelConfig.tools = [
+        { functionDeclarations: convertToolsToGeminiFormat(tools) },
+      ];
+    }
 
     // Build generation config
     const generationConfig: any = {};

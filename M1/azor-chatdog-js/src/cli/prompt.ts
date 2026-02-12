@@ -89,6 +89,23 @@ export async function getUserInput(prompt: string = 'TY: '): Promise<string> {
 }
 
 /**
+ * Get clarification input from user (used by tool executor)
+ * Uses inquirer instead of raw readline to avoid stdin state issues
+ * after async gaps (e.g., LLM API calls between readline sessions)
+ */
+export async function getClarificationInput(prompt: string): Promise<string> {
+  const answers = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'answer',
+      message: prompt,
+    },
+  ]);
+
+  return (answers.answer as string).trim();
+}
+
+/**
  * Get confirmation from user
  */
 export async function getConfirmation(message: string): Promise<boolean> {

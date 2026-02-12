@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "azor-sessions": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/home/maciej/projects/dj/repos/dj-course/M1/azor-mcp-server/dist/server.js"
+      ]
+    }
+  }
+}

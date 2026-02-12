@@ -10,6 +10,7 @@ import type {
   ILLMChatSession,
   Message,
   LLMResponse,
+  ToolResponse,
 } from '../types/index.js';
 import { validateLlamaConfig } from './llamaValidation.js';
 
@@ -30,6 +31,12 @@ class LlamaChatSessionWrapper implements ILLMChatSession {
   async sendMessage(_text: string): Promise<LLMResponse> {
     // Placeholder implementation
     // In a full implementation, this would call the actual LLaMA model
+    throw new Error(
+      'LLaMA client not fully implemented. Please use GEMINI engine instead.'
+    );
+  }
+
+  async sendToolResponses(_toolResponses: ToolResponse[]): Promise<LLMResponse> {
     throw new Error(
       'LLaMA client not fully implemented. Please use GEMINI engine instead.'
     );
@@ -99,7 +106,9 @@ export class LlamaClient implements ILLMClient {
    */
   createChatSession(
     systemInstruction: string,
-    history?: Message[]
+    history?: Message[],
+    _thinkingBudget?: number,
+    _tools?: import('../types/index.js').ToolDefinition[]
   ): ILLMChatSession {
     return new LlamaChatSessionWrapper(systemInstruction, history);
   }

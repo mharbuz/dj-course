@@ -78,6 +78,13 @@ export function displayHelp(sessionId?: string): void {
 }
 
 /**
+ * Print clarification question in magenta
+ */
+export function printClarification(message: string): void {
+  console.log(chalk.magenta(message));
+}
+
+/**
  * Print a separator line
  */
 export function printSeparator(): void {

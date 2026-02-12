@@ -25,6 +25,7 @@
     "chalk": "^5.3.0",
     "dotenv": "^16.4.7",
     "inquirer": "^12.4.0",
+    "langfuse": "^3.38.6",
     "markdown-it": "^14.1.0",
     "node-llama-cpp": "^3.1.1",
     "open": "^10.0.0",

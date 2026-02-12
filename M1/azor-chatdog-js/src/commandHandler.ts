@@ -3,8 +3,9 @@
  */
 
 import { displayHelp, printError, printInfo, printSuccess, printHelp } from './cli/console.js';
-import { setInputHistory } from './cli/prompt.js';
+import { selectFromList, setInputHistory } from './cli/prompt.js';
 import { displaySessionList } from './commands/sessionList.js';
+import { listSessions } from './files/sessionFiles.js';
 import { displaySessionHistory } from './commands/sessionDisplay.js';
 import { removeCurrentSession } from './commands/sessionRemove.js';
 import { runAudioCommand } from './commands/audio.js';
@@ -29,10 +30,10 @@ const VALID_SLASH_COMMANDS = [
  * Handle a slash command
  * @returns true if should exit, false otherwise
  */
-export function handleCommand(
+export async function handleCommand(
   userInput: string,
   manager: SessionManager
-): boolean {
+): Promise<boolean> {
   const parts = userInput.trim().split(/\s+/);
   const command = parts[0].toLowerCase();
   const args = parts.slice(1);
@@ -59,34 +60,42 @@ export function handleCommand(
       handleSessionSubcommand(args, manager);
       return false;
 
-    case '/switch':
-      if (args.length === 0) {
-        printError('Usage: /switch <SESSION_ID>');
-      } else {
-        const sessionId = args[0];
-        const result = manager.switchToSession(sessionId);
+    case '/switch': {
+      let sessionId: string | undefined;
 
-        if (result.loadSuccessful) {
-          printSuccess(`Switched to session ${sessionId}`);
-          // Seed input history with user messages from loaded session
-          const userMsgs = result.session
-            .getHistory()
-            .filter((m: any) => m.role === 'user')
-            .map((m: any) => m.parts[0]?.text || '')
-            .filter(Boolean);
-          setInputHistory(userMsgs);
-          if (result.hasHistory) {
-            const session = result.session;
-            const tokenInfo = session.getTokenInfo();
-            printInfo(
-              `Session has ${session.getHistory().length} messages (${tokenInfo.total} tokens)`
-            );
-          }
-        } else {
-          printError(`Failed to switch: ${result.error}`);
+      if (args.length === 0) {
+        // Interactive session selector
+        sessionId = await selectSessionFromList(manager);
+        if (!sessionId) {
+          return false;
         }
+      } else {
+        sessionId = args[0];
+      }
+
+      const result = manager.switchToSession(sessionId);
+
+      if (result.loadSuccessful) {
+        printSuccess(`Switched to session ${sessionId}`);
+        // Seed input history with user messages from loaded session
+        const userMsgs = result.session
+          .getHistory()
+          .filter((m: any) => m.role === 'user')
+          .map((m: any) => m.parts[0]?.text || '')
+          .filter(Boolean);
+        setInputHistory(userMsgs);
+        if (result.hasHistory) {
+          const session = result.session;
+          const tokenInfo = session.getTokenInfo();
+          printInfo(
+            `Session has ${session.getHistory().length} messages (${tokenInfo.total} tokens)`
+          );
+        }
+      } else {
+        printError(`Failed to switch: ${result.error}`);
       }
       return false;
+    }
 
     case '/assistant':
       handleAssistantSubcommand(args, manager);
@@ -104,6 +113,35 @@ export function handleCommand(
       printError(`Unknown command: ${command}`);
       return false;
   }
+}
+
+/**
+ * Show interactive session selector, returns chosen session ID or undefined if cancelled
+ */
+async function selectSessionFromList(manager: SessionManager): Promise<string | undefined> {
+  const sessions = listSessions();
+  const currentId = manager.getCurrentSession().id;
+
+  // Filter out the current session
+  const otherSessions = sessions.filter((s) => s.session_id !== currentId);
+
+  if (otherSessions.length === 0) {
+    printInfo('Brak innych sesji do przełączenia.');
+    return undefined;
+  }
+
+  const choices = otherSessions.map((s) => {
+    const title = s.title || '(brak tytułu)';
+    const shortId = s.session_id.slice(0, 8);
+    const msgs = `${s.message_count} msg`;
+    const date = s.last_modified.toLocaleDateString();
+    return {
+      name: `${title}  [${shortId}…]  ${msgs}  ${date}`,
+      value: s.session_id,
+    };
+  });
+
+  return selectFromList('Wybierz sesję:', choices);
 }
 
 /**

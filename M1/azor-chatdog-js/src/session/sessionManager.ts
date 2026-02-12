@@ -8,6 +8,7 @@ import type {
   SessionSwitchResult,
   SessionCreateResult,
   SessionRemoveResult,
+  ToolDefinition,
 } from '../types/index.js';
 import { removeSessionFile } from '../files/sessionFiles.js';
 
@@ -17,9 +18,11 @@ import { removeSessionFile } from '../files/sessionFiles.js';
 export class SessionManager {
   private currentSession?: ChatSession;
   private assistant: Assistant;
+  private tools: ToolDefinition[];
 
-  constructor(assistant: Assistant) {
+  constructor(assistant: Assistant, tools?: ToolDefinition[]) {
     this.assistant = assistant;
+    this.tools = tools || [];
   }
 
   /**
@@ -59,7 +62,7 @@ export class SessionManager {
     }
 
     // Create new session
-    const newSession = new ChatSession(this.assistant);
+    const newSession = new ChatSession(this.assistant, undefined, undefined, undefined, this.tools);
     this.currentSession = newSession;
 
     return {
@@ -89,7 +92,7 @@ export class SessionManager {
     }
 
     // Load new session
-    const loadResult = ChatSession.loadFromFile(this.assistant, sessionId);
+    const loadResult = ChatSession.loadFromFile(this.assistant, sessionId, this.tools);
 
     if (!loadResult.success) {
       return {
@@ -126,7 +129,7 @@ export class SessionManager {
     const removeResult = removeSessionFile(removedId);
 
     // Create new session
-    const newSession = new ChatSession(this.assistant);
+    const newSession = new ChatSession(this.assistant, undefined, undefined, undefined, this.tools);
     this.currentSession = newSession;
 
     return {
@@ -143,7 +146,7 @@ export class SessionManager {
   initializeFromCLI(cliSessionId?: string): ChatSession {
     if (cliSessionId) {
       // Try to load specified session
-      const result = ChatSession.loadFromFile(this.assistant, cliSessionId);
+      const result = ChatSession.loadFromFile(this.assistant, cliSessionId, this.tools);
 
       if (result.success) {
         this.currentSession = result.value;
@@ -155,7 +158,7 @@ export class SessionManager {
     }
 
     // Create new session
-    const session = new ChatSession(this.assistant);
+    const session = new ChatSession(this.assistant, undefined, undefined, undefined, this.tools);
     this.currentSession = session;
     return session;
   }
@@ -179,12 +182,12 @@ let sessionManagerInstance: SessionManager | undefined;
 /**
  * Get the session manager singleton
  */
-export function getSessionManager(assistant?: Assistant): SessionManager {
+export function getSessionManager(assistant?: Assistant, tools?: ToolDefinition[]): SessionManager {
   if (!sessionManagerInstance) {
     if (!assistant) {
       throw new Error('Assistant required for first initialization');
     }
-    sessionManagerInstance = new SessionManager(assistant);
+    sessionManagerInstance = new SessionManager(assistant, tools);
   }
   return sessionManagerInstance;
 }

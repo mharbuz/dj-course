@@ -65,10 +65,45 @@ export interface SessionMetadata {
 }
 
 /**
+ * Tool parameter definition
+ */
+export interface ToolParameter {
+  type: string;
+  description: string;
+  required?: boolean;
+}
+
+/**
+ * Tool definition (provider-agnostic)
+ */
+export interface ToolDefinition {
+  name: string;
+  description: string;
+  parameters: Record<string, ToolParameter>;
+}
+
+/**
+ * Tool call from LLM response
+ */
+export interface ToolCall {
+  name: string;
+  args: Record<string, any>;
+}
+
+/**
+ * Tool response to send back to LLM
+ */
+export interface ToolResponse {
+  name: string;
+  result: any;
+}
+
+/**
  * LLM response interface
  */
 export interface LLMResponse {
   text: string;
+  toolCalls?: ToolCall[];
 }
 
 /**
@@ -97,7 +132,8 @@ export interface ILLMClient {
   createChatSession(
     systemInstruction: string,
     history?: Message[],
-    thinkingBudget?: number
+    thinkingBudget?: number,
+    tools?: ToolDefinition[]
   ): ILLMChatSession;
 
   /**
@@ -134,6 +170,11 @@ export interface ILLMChatSession {
    * Send a message and get response
    */
   sendMessage(text: string): Promise<LLMResponse>;
+
+  /**
+   * Send tool responses back to LLM and get final response
+   */
+  sendToolResponses(toolResponses: ToolResponse[]): Promise<LLMResponse>;
 
   /**
    * Get conversation history in universal format
