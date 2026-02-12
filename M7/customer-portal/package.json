@@ -49,6 +49,7 @@
     "typescript": "^5.2.2"
   },
   "optionalDependencies": {
+    "@oxc-parser/binding-linux-x64-gnu": "^0.75.0",
     "@rollup/rollup-linux-x64-gnu": "latest",
     "@tailwindcss/oxide-linux-x64-gnu": "latest",
     "lightningcss-linux-x64-gnu": "latest"
