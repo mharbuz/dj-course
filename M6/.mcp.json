@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "docker-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/home/maciej/projects/dj/repos/docker-mcp",
+        "run",
+        "docker-mcp"
+      ]
+    }
+  }
+}
