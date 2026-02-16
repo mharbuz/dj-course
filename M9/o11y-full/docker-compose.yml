@@ -5,12 +5,14 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - PORT=3000
       - NODE_ENV=development
       - SERVICE_NAME=products-api
-      - LOKI_HOST=http://loki:3100
       - DATABASE_URL=postgresql://admin:secret@postgres:5432/products
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318/v1/traces
-      - OTEL_SERVICE_NAME=products-api
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://otel-collector:4318/v1/metrics
+      - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://otel-collector:4318/v1/logs
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=products-api,service.version=1.0.0,deployment.environment=development
     depends_on:
       postgres:
         condition: service_healthy
@@ -56,13 +58,30 @@ services:
       timeout: 5s
       retries: 5
   
+  # Node-exporter – metryki hosta (CPU, RAM, dysk, sieć)
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    networks:
+      - o11y-network
+
   # Postgres exporter for Prometheus
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter:v0.17.1
     ports:
       - "9187:9187"
     environment:
-      - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres:5432/postgres?sslmode=disable
+      - DATA_SOURCE_NAME=postgresql://admin:secret@postgres:5432/products?sslmode=disable
     depends_on:
       - postgres
     networks:
@@ -113,24 +132,21 @@ services:
   tempo:
     image: grafana/tempo:2.7.0
     user: "10001" # Explicitly set UID
-    # command: ["-config.file=/etc/tempo.yaml"]
-    # volumes:
-    #   - ./tempo/config/tempo.yaml:/etc/tempo.yaml
-    #   - tempo-data:/tmp/tempo
     command: 
       - -config.file=/etc/tempo.yaml
-      - -storage.trace.local.path=/tmp/tempo/blocks # Match container path
     volumes:
       - ./tempo/config/tempo.yaml:/etc/tempo.yaml
       - ./tempo-data/blocks:/tmp/tempo/blocks
       - ./tempo-data/wal:/tmp/tempo/wal
+      - ./tempo-data/generator:/tmp/tempo/generator
     ports:
       - "3200:3200"   # HTTP
-      # - "4317:4317"   # OTLP gRPC # 🔥🔥🔥
-      # - "4318:4318"   # OTLP HTTP
+      # - "4317:4317"   # OTLP gRPC (handled by otel-collector)
+      # - "4318:4318"   # OTLP HTTP (handled by otel-collector)
       - "9411:9411"   # Zipkin
     networks:
       - o11y-network
+    restart: unless-stopped
 
   # Grafana for visualization
   grafana:
@@ -159,11 +175,11 @@ services:
     ports:
       - "4317:4317"  # gRPC
       - "4318:4318"  # HTTP
-      - "8888:8888"  # collector metrics endpoint
+      - "8890:8890"  # collector metrics endpoint
       - "8889:8889"  # collector internal metrics endpoint
     depends_on:
-      - products-api
       - postgres-exporter
+      - node-exporter
       - prometheus
       - loki
     networks:
