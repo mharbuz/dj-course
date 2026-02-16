@@ -1,0 +1,28 @@
+[     319ms] [WARNING] [Vue warn]: Property "usagePercentaage" was accessed during render but is not defined on instance. 
+  at <CreditUsageChart credit-info= {limit: 0, used: 0} > 
+  at <BillingPage > 
+  at <Billing onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/dashboard/billing" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /dashboard/billing, hash: , query: Object, name: dashboard-billing, path: /dashboard/billing}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Dashboard ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="dashboard" layoutProps= {ref: RefImpl} name="dashboard" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="dashboard" name="dashboard"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=64b7eaa5:49
+[     923ms] [WARNING] [Vue warn]: Property "usagePercentaage" was accessed during render but is not defined on instance. 
+  at <CreditUsageChart credit-info= {limit: 50000, used: 15000} > 
+  at <BillingPage > 
+  at <Billing onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/dashboard/billing" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /dashboard/billing, hash: , query: Object, name: dashboard-billing, path: /dashboard/billing}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Dashboard ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="dashboard" layoutProps= {ref: RefImpl} name="dashboard" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="dashboard" name="dashboard"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=64b7eaa5:49

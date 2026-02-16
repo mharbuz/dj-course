@@ -13,6 +13,9 @@
 
     </div>
 
+    <!-- Today's Progress & Goals Stats -->
+    <ServiceRequestsStats class="mb-8" />
+
     <!-- Tabs -->
     <Tabs
       :tabs="SERVICE_REQUESTS_TABS"
@@ -36,6 +39,7 @@
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Tabs from '~/components/ui-library/tabs/Tabs.vue'
+import ServiceRequestsStats from './ServiceRequestsStats.vue'
 import TransportationRequestsListing from '../transportation/transportation-requests-listing/TransportationRequestsPage.vue'
 import WarehousingRequestsPage from '~/features/warehousing/warehousing-requests-listing/WarehousingRequestsPage.vue'
 

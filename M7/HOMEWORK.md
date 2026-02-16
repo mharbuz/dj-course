@@ -108,3 +108,4 @@ Wstęp:
 
 Zadanie:
 - Następnie promptuj LLMa tak, aby otworzył aplikację w przeglądarce, przenawigował do miejsca, w którym błąd występuje, a następnie odczytał błąd z konsoli - i go naprawił.
+

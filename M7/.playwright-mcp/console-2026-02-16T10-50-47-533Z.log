@@ -1,0 +1,145 @@
+[    4817ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: video 
+  at <VideoBackground > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4817ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:1636
+[    4821ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: div 
+  at <VideoBackground > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4821ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VideoBackground > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4822ms] [WARNING] [Vue warn]: Hydration class mismatch on JSHandle@node 
+  - rendered on server: class="null"
+  - expected on client: class="fixed top-0 left-0 -z-10 h-full w-full overflow-hidden"
+  Note: this mismatch is check-only. The DOM will not be rectified in production due to performance overhead.
+  You should fix the source of the mismatch. 
+  at <VideoBackground > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4822ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: div 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4826ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: Symbol(v-fgt) 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4831ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4831ms] [WARNING] [Vue warn]: Hydration class mismatch on JSHandle@node 
+  - rendered on server: class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8"
+  - expected on client: class="bg-white/70 dark:bg-gray-900/80 backdrop-blur-sm py-8 px-4 shadow-2xl sm:rounded-lg sm:px-10"
+  Note: this mismatch is check-only. The DOM will not be rectified in production due to performance overhead.
+  You should fix the source of the mismatch. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4832ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4832ms] [WARNING] [Vue warn]: Hydration class mismatch on JSHandle@node 
+  - rendered on server: class="transition-all duration-300 ease-in-out lg:pl-60"
+  - expected on client: class="sm:mx-auto sm:w-full sm:max-w-md"
+  Note: this mismatch is check-only. The DOM will not be rectified in production due to performance overhead.
+  You should fix the source of the mismatch. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4832ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[    4833ms] [WARNING] [Vue warn]: Hydration class mismatch on JSHandle@node 
+  - rendered on server: class="min-h-screen bg-gray-100 dark:bg-gray-900"
+  - expected on client: class="relative min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8"
+  Note: this mismatch is check-only. The DOM will not be rectified in production due to performance overhead.
+  You should fix the source of the mismatch. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ba72df94:49
+[  164280ms] [WARNING] [Vue warn]: Hydration text content mismatch on JSHandle@node 
+  - rendered on server:  Welcome back, ! Here's what's happening with your logistics. 
+  - expected on client:  Welcome back, John! Here's what's happening with your logistics.  
+  at <DashboardPage > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/dashboard" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /dashboard, hash: , query: Object, name: dashboard, path: /dashboard}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Dashboard ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="dashboard" layoutProps= {ref: RefImpl} name="dashboard" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="dashboard" name="dashboard"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=64b7eaa5:49
+[  164281ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3333/_nuxt/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=64b7eaa5:1636
