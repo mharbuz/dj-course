@@ -7,11 +7,5 @@
     ],
     "deny": [],
     "ask": []
-  },
-  "env": {
-    "TRACE_TO_LANGFUSE": "false",
-    "LANGFUSE_PUBLIC_KEY": "pk-lf-fcead6ab-f98e-44a0-b497-5e88c933d5a3",
-    "LANGFUSE_SECRET_KEY": "sk-lf-86d94a94-b2db-4025-a335-98a266eea30c",
-    "LANGFUSE_HOST": "https://cloud.langfuse.com"
   }
 }
